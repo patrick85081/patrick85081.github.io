@@ -5,6 +5,8 @@ draft: false
 description: "Windows 快捷列軟體（Wox），她號稱是 Windows 上的 Alfred ，透過一條小小的搜尋列，可以開啟軟體、搜尋檔案、查詢網頁，並透過安裝外掛還能當作計算機、翻譯器、剪貼簿等來使用。"
 tags:
   - Tools
+categories:
+  - Tools
 thumbnail: 'https://images.unsplash.com/photo-1609270293211-726165a8c3bb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxMTc3M3wwfDF8c2VhcmNofDIwOXx8aHR0cCUzQSUyRiUyRmFwaS53b3gub25lJTJGbWVkaWElMkZwbHVnaW4lMkZDMzQwNkI1QzIyRjA0OTg0QjAxODNEQUU4OTdDQUIzRiUyRmRlbW8tMmQzNzQwNjYtOWRiNS00NzVkLTg4NDktZWIwMDIzZjdlYWQ0LmdpZnxlbnwwfHx8fDE2NDcxNDQ3MDU&ixlib=rb-1.2.1&q=80&w=2000'
 ---
 Windows 快捷列軟體（Wox），她號稱是 Windows 上的 Alfred ，透過一條小小的搜尋列，可以開啟軟體、搜尋檔案、查詢網頁，並透過安裝外掛還能當作計算機、翻譯器、剪貼簿等來使用。

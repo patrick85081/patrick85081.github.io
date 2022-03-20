@@ -1,28 +1,37 @@
 baseURL = 'http://example.org/'
 languageCode = 'zh-TW'
-title = '派翠克隨手手札'
+title = '派翠克技術手札'
 #theme = 'ananke'
 theme = 'm10c'
 
 [params]
   author = "Patrick"
-  description = "這裡是派翠克隨手手札"
+  description = "這裡是派翠克技術手札"
   avatar = 'avatar.png'
 
 [menu]
   [[menu.main]]
     identifier = "home"
-    name = "Home"
+    name = "首頁"
     url = "/"
     weight = 1
   [[menu.main]]
     identifier = "tags"
-    name = "Tags"
+    name = "標籤"
     url = "/tags/"
     weight = 2
+  [[menu.main]]
+    identifier = "search"
+    name = "文章搜尋"
+    url = "/search/"
+    weight = 3
 
 
 [[params.social]]
   icon = "github"
   name = "Github"
   url = "https://github.com/patrick85081"
+
+
+[outputs]
+  home = ["HTML", "RSS", "JSON"]

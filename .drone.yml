@@ -16,7 +16,7 @@ steps:
         - archetypes
         - content
         - data
-        - layout
+        - layouts
         - public
         - resources
         - static
