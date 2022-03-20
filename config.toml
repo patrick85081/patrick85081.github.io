@@ -1,0 +1,28 @@
+baseURL = 'http://example.org/'
+languageCode = 'zh-TW'
+title = '派翠克隨手手札'
+#theme = 'ananke'
+theme = 'm10c'
+
+[params]
+  author = "Patrick"
+  description = "這裡是派翠克隨手手札"
+  avatar = 'avatar.png'
+
+[menu]
+  [[menu.main]]
+    identifier = "home"
+    name = "Home"
+    url = "/"
+    weight = 1
+  [[menu.main]]
+    identifier = "tags"
+    name = "Tags"
+    url = "/tags/"
+    weight = 2
+
+
+[[params.social]]
+  icon = "github"
+  name = "Github"
+  url = "https://github.com/patrick85081"

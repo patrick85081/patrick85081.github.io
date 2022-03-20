@@ -1,0 +1,27 @@
+kind: pipeline
+type: docker
+name: publish
+
+steps:
+  - name: copy
+    image: appleboy/drone-scp
+    settings:
+      host: 
+        from_secret: host
+      username: 
+        from_secret: username
+      password: 
+        from_secret: password
+      source: 
+        - archetypes
+        - content
+        - data
+        - layout
+        - public
+        - resources
+        - static
+        - themes
+        - config.toml
+      target: 
+        from_secret: target
+      rm: false
