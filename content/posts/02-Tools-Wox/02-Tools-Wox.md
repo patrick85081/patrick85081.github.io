@@ -31,7 +31,7 @@ wiki => wiki 搜尋
 
 * 使用畫面
 
-![](/02-Tools-Wox/Wox_Dictionary.gif)
+![](./Wox_Dictionary.gif)
 
 * 前置作業
 先下載[此檔案](https://github.com/harrynull/WoxDictionary/releases/download/dict/ecdict.7z.zip)，放到C:\Users\{用户名}\AppData\Roaming\Wox\Plugins\Dictionary-{随机字符}\dicts里才可以正常使用！
@@ -58,7 +58,7 @@ d <Word>!e
 ### 進制轉換
 > wpm install 进制转换
  
-![](/02-Tools-Wox/Wox_Decimal.png)
+![](./Wox_Decimal.png)
  
 使用进制关键字+“~”开始。
 ```
