@@ -1,10 +1,10 @@
 ---
-title: "2022 03 26 Ldap 資料查詢"
+title: "Ldap 資料查詢"
 date: 2022-03-26T15:38:18+08:00
 draft: false
 tags: 
   - Ldap
-description: "之前接手的程式碼是使用`DirectoryEntry`來做Ldap連線，但一直試不出來Ssl連線，後來查了一下，原來可以使用`LdapConnection`，這裡來記錄一下它的使用方式。"
+description: "之前接手的程式碼是使用DirectoryEntry來做Ldap連線，但一直試不出來Ssl連線，後來查了一下，原來可以使用LdapConnection，這裡來記錄一下它的使用方式。"
 ---
 # Ldap 連線
 之前接手的程式碼是使用`DirectoryEntry`來做Ldap連線，但一直試不出來Ssl連線，後來查了一下，原來可以使用`LdapConnection`，這裡來記錄一下它的使用方式。

@@ -1,7 +1,6 @@
-baseURL = 'http://example.org/'
+baseURL = 'https://patrick85081.github.io/'
 languageCode = 'zh-TW'
 title = '派翠克技術手札'
-#theme = 'ananke'
 theme = 'm10c'
 
 [params]
