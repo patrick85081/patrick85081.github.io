@@ -1,7 +1,7 @@
 ---
 title: "AvaloniaUI 踩坑紀錄"
 date: 2022-03-21T19:45:10+08:00
-draft: true
+draft: false
 tags: 
   - Avalonia
   - WPF

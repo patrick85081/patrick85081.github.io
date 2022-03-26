@@ -1,6 +1,6 @@
 ---
 title: "ARP 協議"
-date: 2022-03-20T10:58:28+08:00
+date: 2022-03-19T10:58:28+08:00
 draft: false
 description: "ARP全名為 Address Resolution Protocol  （位置發現協議），在網路鏈路層上傳遞封包都需要知道目的的Mac Address，但在網路曾是使用網路層地止IP Address，所以需要透過ARP協議去廣播，詢問對方的Mac Address。"
 tags: 
