@@ -1,7 +1,7 @@
 ---
 title: "好用工具 Wox"
 date: 2022-03-20T13:20:58+08:00
-draft: false
+draft: true
 description: "Windows 快捷列軟體（Wox），她號稱是 Windows 上的 Alfred ，透過一條小小的搜尋列，可以開啟軟體、搜尋檔案、查詢網頁，並透過安裝外掛還能當作計算機、翻譯器、剪貼簿等來使用。"
 tags:
   - Tools
