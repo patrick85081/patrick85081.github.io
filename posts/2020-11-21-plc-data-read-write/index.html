@@ -1,0 +1,59 @@
+<!doctype html><html lang=zh-tw><head><title>PLC 讀寫資料轉換 // 派翠克技術手札</title><link rel="shortcut icon" href=/favicon.ico><meta charset=utf-8><meta name=generator content="Hugo 0.81.0"><meta name=viewport content="width=device-width,initial-scale=1"><meta name=author content="Patrick"><meta name=description content="當要跟PLC做資料交換溝通時，常常會碰到一個問題，PLC是16bit的系統，傳遞字串與數字時都需要經過一些處理，高位元與低位元的byte處理，這裡做個紀錄以免忘記。"><link rel=stylesheet href=https://patrick85081.github.io/css/main.min.88e7083eff65effb7485b6e6f38d10afbec25093a6fac42d734ce9024d3defbd.css><meta name=twitter:card content="summary"><meta name=twitter:title content="PLC 讀寫資料轉換"><meta name=twitter:description content="當要跟PLC做資料交換溝通時，常常會碰到一個問題，PLC是16bit的系統，傳遞字串與數字時都需要經過一些處理，高位元與低位元的byte處理，這裡做個紀錄以免忘記。"><meta property="og:title" content="PLC 讀寫資料轉換"><meta property="og:description" content="當要跟PLC做資料交換溝通時，常常會碰到一個問題，PLC是16bit的系統，傳遞字串與數字時都需要經過一些處理，高位元與低位元的byte處理，這裡做個紀錄以免忘記。"><meta property="og:type" content="article"><meta property="og:url" content="https://patrick85081.github.io/posts/2020-11-21-plc-data-read-write/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2020-11-21T20:04:23+08:00"><meta property="article:modified_time" content="2020-11-21T20:04:23+08:00"></head><body><header class=app-header><a href=https://patrick85081.github.io/><img class=app-header-avatar src=/avatar.png alt=Patrick></a><h1>派翠克技術手札</h1><nav class=app-header-menu><a class=app-header-menu-item href=/>首頁</a>
+-
+<a class=app-header-menu-item href=/tags/>標籤</a>
+-
+<a class=app-header-menu-item href=/search/>文章搜尋</a></nav><p>這裡是派翠克技術手札</p><div class=app-header-social><a href=https://github.com/patrick85081 target=_blank rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-github"><title>Github</title><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37.0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44.0 0020 4.77 5.07 5.07.0 0019.91 1S18.73.65 16 2.48a13.38 13.38.0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07.0 005 4.77 5.44 5.44.0 003.5 8.55c0 5.42 3.3 6.61 6.44 7A3.37 3.37.0 009 18.13V22"/></svg></a></div></header><main class=app-container><article class=post><header class=post-header><h1 class=post-title>PLC 讀寫資料轉換</h1><div class=post-meta><div><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar"><title>calendar</title><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>2020-11-21</div><div><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock"><title>clock</title><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>2 min read</div><div><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag"><title>tag</title><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83.0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg><a class=tag href=https://patrick85081.github.io/tags/plc/>PLC</a></div></div></header><div class=post-content><p>當要跟PLC做資料交換溝通時，常常會碰到一個問題，PLC是16bit的系統，傳遞字串與數字時都需要經過一些處理，高位元與低位元的byte處理，這裡做個紀錄以免忘記。</p><h2 id=字串類型>字串類型</h2><p>PLC一個Device為16bit，一個字元為8bit，所以可放兩個字元。</p><h3 id=寫入字串>寫入字串</h3><p>我們需要將一串文字兩個字元一組轉成int，寫入int陣列進去PLC。
+程式的邏輯應該長這樣</p><blockquote><p>一個int = 高位元文字(char[1]) * 256 + 低位元文字(char[0])</p></blockquote><p>來，我們來看程式碼：</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cs data-lang=cs><span style=color:#75715e>// 輸入的字串
+</span><span style=color:#75715e></span><span style=color:#66d9ef>string</span> text = <span style=color:#e6db74>&#34;Patrick&#34;</span>;
+<span style=color:#66d9ef>int</span>[] datas = (
+    <span style=color:#75715e>// 總共有幾組
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>from</span> num <span style=color:#66d9ef>in</span> Enumerable.Range(<span style=color:#ae81ff>0</span>, (text.Length + <span style=color:#ae81ff>1</span>))
+    <span style=color:#75715e>// 每一組的起始 index
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>let</span> startIndex = num * <span style=color:#ae81ff>2</span>
+    <span style=color:#75715e>// 低位元
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>let</span> low = text.ElementAtOrDefault(startIndex)
+    <span style=color:#75715e>// 高位元
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>let</span> heigh = text.ElementAtOrDefault(startIndex + <span style=color:#ae81ff>1</span>)
+    <span style=color:#66d9ef>select</span> height * <span style=color:#ae81ff>256</span> + low
+)
+.ToArray();
+</code></pre></div><h3 id=讀入字串>讀入字串</h3><p>接下來我們需要將int 陣列轉回字串，一個int為兩個字元，程式的虛擬碼長這樣：</p><blockquote><p>char[0] = 低位元 (char)(int % 256)<br>char[1] = 高位元 (char)(int / 256)</p></blockquote><p>來，我們來看程式碼</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cs data-lang=cs><span style=color:#66d9ef>int</span>[] datas;
+<span style=color:#66d9ef>char</span>[] charArray = (
+    <span style=color:#66d9ef>from</span> num <span style=color:#66d9ef>in</span> datas
+    <span style=color:#66d9ef>let</span> chars <span style=color:#66d9ef>new</span> <span style=color:#66d9ef>char</span>[]
+    {
+        <span style=color:#75715e>// 低位元
+</span><span style=color:#75715e></span>        (<span style=color:#66d9ef>char</span>) (num % <span style=color:#ae81ff>256</span>),
+        <span style=color:#75715e>// 高位元
+</span><span style=color:#75715e></span>        (<span style=color:#66d9ef>char</span>) (num / <span style=color:#ae81ff>256</span>),
+    }
+    <span style=color:#66d9ef>from</span> c <span style=color:#66d9ef>in</span> chars
+    <span style=color:#66d9ef>select</span> c
+)
+.ToArray();
+<span style=color:#75715e>// 轉換回字串，過濾開頭結尾的 &#39;\0&#39; 的字元
+</span><span style=color:#75715e></span><span style=color:#66d9ef>var</span> text = <span style=color:#66d9ef>new</span> <span style=color:#66d9ef>string</span>(charAray).Trim(<span style=color:#e6db74>&#39;\0&#39;</span>);
+</code></pre></div><h2 id=32bit-數字>32bit 數字</h2><p>c#中的int全名就叫做int32剛好就是32bit，前面說過PLC一個Device只有16bit，所以要把兩個Device轉成int32</p><h3 id=寫入32bit數字>寫入32bit數字</h3><p>我們需要拆解int32成4個bytes，兩個bytes一組轉成int16，最後再轉成int32</p><blockquote><p>輸入數字 (int) => byte[4]<br>結果<br>int[0] = byte[0] byte[1]<br>int[1] = byte[2] byte[3]</p></blockquote><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cs data-lang=cs><span style=color:#66d9ef>int</span> <span style=color:#66d9ef>value</span> = -<span style=color:#ae81ff>200</span>;
+<span style=color:#66d9ef>var</span> bytes = BitConverter.GetBytes(<span style=color:#66d9ef>value</span>);
+<span style=color:#66d9ef>var</span> datas = (
+    <span style=color:#66d9ef>from</span> num <span style=color:#66d9ef>in</span> Enumerable.Range(<span style=color:#ae81ff>0</span>, <span style=color:#ae81ff>1</span>)
+    <span style=color:#66d9ef>let</span> index = num * <span style=color:#ae81ff>2</span>
+    <span style=color:#66d9ef>let</span> int16 = BitConverter.ToInt16(bytes, index)
+    <span style=color:#66d9ef>let</span> int32 = Convert.ToInt32(int16)
+    <span style=color:#66d9ef>select</span> int32
+)
+.ToArray()
+</code></pre></div><h3 id=讀取32bit數字>讀取32bit數字</h3><p>我們從PLC讀出兩個DeviceBlock，得到長度為2的int陣列，我們需要各從這兩個int身上讀取兩個byte組合成一個int</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cs data-lang=cs><span style=color:#66d9ef>int</span>[] datas;
+<span style=color:#66d9ef>byte</span>[] byteArray = (
+    <span style=color:#66d9ef>from</span> data <span style=color:#66d9ef>in</span> datas
+    <span style=color:#66d9ef>from</span> @byte <span style=color:#66d9ef>in</span> BitConverter.GetBytes(data)
+                    .Take(<span style=color:#ae81ff>2</span>)
+    <span style=color:#66d9ef>select</span> @byte
+)
+.ToArray();
+
+<span style=color:#66d9ef>int</span> result = BitConverter.ToInt32(byteArray, <span style=color:#ae81ff>0</span>);
+</code></pre></div><h2 id=16bit數字>16bit數字</h2><p>寫入沒有太大的問題，主要是讀取資料時候，數字又是負數，產生的問題</p><blockquote><p>PLC Device : FF F0<br>到達C# int32 : 00 00 FF F0</p></blockquote><p>這個時候數字解讀就會有問題</p><h3 id=讀取16bit數字>讀取16bit數字</h3><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cs data-lang=cs><span style=color:#66d9ef>int</span> num = -<span style=color:#ae81ff>200</span>;
+<span style=color:#66d9ef>byte</span>[] bytes = BitConverter.GetBytes(num).Take(<span style=color:#ae81ff>2</span>).ToArray();
+<span style=color:#66d9ef>short</span> int16 = BitConverter.ToInt16(bytes, <span style=color:#ae81ff>0</span>);
+</code></pre></div></div><div class=post-footer></div></article></main></body></html>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>WindowsAppDriver on 派翠克技術手札</title><link>https://patrick85081.github.io/tags/windowsappdriver/</link><description>Recent content in WindowsAppDriver on 派翠克技術手札</description><generator>Hugo -- gohugo.io</generator><language>zh-TW</language><lastBuildDate>Mon, 28 Feb 2022 22:52:33 +0800</lastBuildDate><atom:link href="https://patrick85081.github.io/tags/windowsappdriver/index.xml" rel="self" type="application/rss+xml"/><item><title>Appium + WindowsApplicationDriver Sample</title><link>https://patrick85081.github.io/posts/2022-02-28-winappdriver-sample/</link><pubDate>Mon, 28 Feb 2022 22:52:33 +0800</pubDate><guid>https://patrick85081.github.io/posts/2022-02-28-winappdriver-sample/</guid><description>Selemium 是測試Web UI的測試工具，可以遙控瀏覽器模擬人工行為，達到UI測試功能，Windows Desktop上是否也有此功能，那就是 Appium 了。
+環境相依 開啟 Windows 開發者模式 安裝 WinAppDriver 使用管理員權限開啟C:\Program Files (x86)\Windows Application Driver\WinAppDriver.exe
+並記錄 http://127.0.0.1:4723/下來，待會測試時需要使用此網址
+工具 WinAppDriver UI Recorder 錄製UI操作轉成程式碼或查看XPath 下載並執行WinAppDriver UI Recoder
+安裝 Windows 10 SDK inspect.exe可以查看應用程式內控制項代號 C:\Program Files (x86)\Windows Kits\10\bin\10.0.xxxxx.0\x64\inspect.exe
+Appium WebDriver 首先先安裝 Appium.WebDriver
+dotnet package add Appium.WebDriver
+小算盤測試 public class CalculatorTests { private WindowsDriver&amp;lt;WindowsElement&amp;gt; WindowsDriver; [SetUp] public void Setup() { var appiumOptions = new AppiumOptions(){}; // 如果是 UWP 輸入 Packet Id，如果是 Desktop 則輸入exe路徑 appiumOptions.</description></item></channel></rss>
