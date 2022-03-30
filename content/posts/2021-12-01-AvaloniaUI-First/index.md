@@ -1,6 +1,6 @@
 ---
 title: "AvaloniaUI 踩坑紀錄"
-date: 2022-03-21T19:45:10+08:00
+date: 2021-12-01T19:45:10+08:00
 draft: false
 tags: 
   - Avalonia
