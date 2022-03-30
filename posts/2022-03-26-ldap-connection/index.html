@@ -7,7 +7,7 @@ ldap.AuthType = AuthType.Basic;
 ldap.SessionOptions.ProtocolVersion = <span style=color:#ae81ff>3</span>;
 <span style=color:#75715e>// 登入
 </span><span style=color:#75715e></span>ldap.Bind(<span style=color:#66d9ef>new</span> NetworkCredential(<span style=color:#e6db74>&#34;Account&#34;</span>, <span style=color:#e6db74>&#34;Password&#34;</span>));
-</code></pre></div><p><img src=./SimpleBind.jpg alt="Simple Bind"></p><h2 id=sals>Sals</h2><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cs data-lang=cs><span style=color:#66d9ef>var</span> ldap = <span style=color:#66d9ef>new</span> LdapConnection(<span style=color:#e6db74>&#34;192.168.10.201:389&#34;</span>);
+</code></pre></div><p><img src=./SimpleBind.jpg alt="Simple Bind"></p><h2 id=sasl>Sasl</h2><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cs data-lang=cs><span style=color:#66d9ef>var</span> ldap = <span style=color:#66d9ef>new</span> LdapConnection(<span style=color:#e6db74>&#34;192.168.10.201:389&#34;</span>);
 <span style=color:#75715e>// Sasl
 </span><span style=color:#75715e></span>ldap.AuthType = AuthType.Negotiate;
 ldap.SessionOptions.ProtocolVersion = <span style=color:#ae81ff>3</span>;
