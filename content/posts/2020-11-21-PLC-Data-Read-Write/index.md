@@ -1,5 +1,5 @@
 ---
-title: "PLC 讀寫的資料轉換"
+title: "PLC 讀寫資料轉換"
 date: 2020-11-21T20:04:23+08:00
 draft: false
 tags:
