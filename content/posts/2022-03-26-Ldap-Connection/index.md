@@ -22,7 +22,7 @@ ldap.Bind(new NetworkCredential("Account", "Password"));
 ```
 ![Simple Bind](./SimpleBind.jpg)
 
-## Sals
+## Sasl
 ``` cs
 var ldap = new LdapConnection("192.168.10.201:389");
 // Sasl
