@@ -1,6 +1,6 @@
 ---
 title: "ARP 協議"
-date: 2022-03-19T10:58:28+08:00
+date: 2021-05-19T10:58:28+08:00
 draft: false
 description: "ARP全名為 Address Resolution Protocol  （位置發現協議），在網路鏈路層上傳遞封包都需要知道目的的Mac Address，但在網路曾是使用網路層地止IP Address，所以需要透過ARP協議去廣播，詢問對方的Mac Address。"
 tags: 
@@ -50,5 +50,34 @@ C:\> arp -d 192.168.28.36
 # ARP 攻擊
 由於APR的機制會去詢問網路上的設備，有詢問就會有欺騙，使用者的電腦和路由器都有各自的ARP資料，會互相記錄對方的IP與MAC地址，駭客攻擊方會發ARP指令給雙方，讓雙方的APR資料中的MAC地址都變成駭客電腦地址，駭客就會收到雙方所有的封包資料。
 
-# 應對方式
+## 應對方式
 只要不使用http、ftp、telnet等這類以明文傳送的協定，改使用https、sftp、ssh等這類經過加密過的協定，就算封包經過駭客手中，也無法解析裡面資料。
+
+---
+# Gratuitous ARP
+
+也稱為 免費的ARP、無故的ARP，GARP與一般ARP不同的地方在於，並非想要得到目標IP對應的MAC，而是主機啟動時，發送GARP，**請求自己的 IP地址的MAC**，就好像自問自答
+
+## 目的
+1. 以廣播的形式告訴大家自己的IP與MAC，不期望得到回應
+
+3. 藉由此方法發現發現有沒有其他人使用此IP，如果有人回應則代表**IP衝突**
+
+3. 也順便藉由此方式更新自己的MAC給其他設備，預防自己換網卡(MAC)
+
+## GARP 請求 與 回應
+
+發送免費ARP，我要使用XX地址，請問有人使用嗎?使用的人請你告訴我。
+* 來源IP 與 目標IP 地址相同
+* 目標MAC是廣播MAC
+
+![](GARP_1.png)
+
+如果有人回應，我正在使用地址XXX，就代表發生IP衝突
+* 來源IP 與 目標IP 地址相同
+* 目標MAC為廣播MAC
+
+![](GARP_2.png)
+
+## 資料來源
+[免費ARP與IP位址衝突](https://kknews.cc/zh-tw/code/ezm9vvy.html)
