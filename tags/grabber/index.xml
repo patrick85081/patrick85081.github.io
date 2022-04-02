@@ -7,5 +7,7 @@ Halcon xyz Frame Grabber Interface
 Halcon做的一套中間取像的抽象層，也就是我們軟體界所說的 interface
 Frame Grabber Driver &amp;amp; SDK
 這裡是實作取像功能的實作，整合不同廠牌的相機驅動，為了方便我們可以使用
-使用方式 選擇實作介面 也可以使用自動偵測，判斷電腦本身可以使用哪些取像實作 連結相機 這裡展示就只使用File方式，指定資料夾內的影像，模擬相機取像的效果。 相機參數設定 這裡可以設定相機參數，例如使用GeniCam，這裡就會出現GeniCam參數 使用範本產生程式碼 HDevelop Demo C# Demo 對於寫相機SDK有經驗的朋友可能會說，相機SDK怎麼可以沒有取像Callback方法呢?
-其實Halcon也有提供，但經過測試發現不是所有的實作都支援Callback方法，但如果只是要取像測試的話，這樣單張取像的方式應該也就夠用了。</description></item></channel></rss>
+使用方式 選擇實作介面 也可以使用自動偵測，判斷電腦本身可以使用哪些取像實作 連結相機 這裡展示就只使用File方式，指定資料夾內的影像，模擬相機取像的效果。 相機參數設定 這裡可以設定相機參數，例如使用GenICamTL，這裡就會出現GenICamTL參數 使用範本產生程式碼 HDevelop Demo C# Demo 對於寫相機SDK有經驗的朋友可能會說，相機SDK怎麼可以沒有取像Callback方法呢?
+其實Halcon也有提供，但經過測試發現不是所有的實作都支援Callback方法，但如果只是要取像測試的話，這樣單張取像的方式應該也就夠用了。
+Halcon Frame Grabber Callback 測試過 GenICamTL 有支援
+var grabber = new HFramegrabber( &amp;#34;GenICamTL&amp;#34;, 0, 0, 0, 0, 0, 0, &amp;#34;progressive&amp;#34;, -1, &amp;#34;default&amp;#34;, -1, &amp;#34;false&amp;#34;, &amp;#34;default&amp;#34;, _deviceName, 0, -1); grabber.</description></item></channel></rss>

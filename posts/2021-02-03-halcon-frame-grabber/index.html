@@ -6,5 +6,33 @@
 <a class=tag href=https://patrick85081.github.io/tags/grabber/>Grabber</a></div></div></header><div class=post-content><p>Halcon是一套付費的影像處裡函式庫，為了方便測試裡面的影像處理功能，所以她有整合了一些相機取像的功能，Halcon將軟體切成四層：</p><h1 id=軟體架構>軟體架構</h1><ol><li><p>Halcon Application<br>這裡代表我們開發的軟體，或者<code>HDevlop</code>測試工具</p></li><li><p>Halcon Image Processing Library<br>這裡是我們使用的Halcon函示庫，就是<code>halcon.dll</code></p></li><li><p>Halcon xyz Frame Grabber Interface<br>Halcon做的一套中間取像的抽象層，也就是我們軟體界所說的 <code>interface</code></p></li><li><p>Frame Grabber Driver & SDK<br>這裡是實作取像功能的實作，整合不同廠牌的相機驅動，為了方便我們可以使用</p></li></ol><p><img src=Halcon_Frame_Grabber_Application.png alt></p><h1 id=使用方式>使用方式</h1><ul><li>選擇實作介面
 也可以使用自動偵測，判斷電腦本身可以使用哪些取像實作</li></ul><p><img src=Image_Acquisition_1.png alt></p><ul><li>連結相機
 這裡展示就只使用<code>File</code>方式，指定資料夾內的影像，模擬相機取像的效果。</li></ul><p><img src=Image_Acquisition_2.png alt></p><ul><li>相機參數設定
-這裡可以設定相機參數，例如使用<code>GeniCam</code>，這裡就會出現<code>GeniCam</code>參數</li></ul><p><img src=Image_Acquisition_3.png alt></p><ul><li>使用範本產生程式碼</li></ul><p><img src=Image_Acquisition_4.png alt></p><h1 id=hdevelop-demo>HDevelop Demo</h1><p><img src=HDevlop_Demo.gif alt></p><p><img src=HDevelop_Code.png alt></p><h1 id=c-demo>C# Demo</h1><p>對於寫相機SDK有經驗的朋友可能會說，相機SDK怎麼可以沒有<code>取像Callback</code>方法呢?<br>其實Halcon也有提供，但經過測試發現不是所有的實作都支援Callback方法，但如果只是要取像測試的話，這樣單張取像的方式應該也就夠用了。</p><p><img src=CSharp_Code.png alt>
-<img src=CSharp_Demo.gif alt></p></div><div class=post-footer></div></article></main></body></html>
+這裡可以設定相機參數，例如使用<code>GenICamTL</code>，這裡就會出現<code>GenICamTL</code>參數</li></ul><p><img src=Image_Acquisition_3.png alt></p><ul><li>使用範本產生程式碼</li></ul><p><img src=Image_Acquisition_4.png alt></p><h1 id=hdevelop-demo>HDevelop Demo</h1><p><img src=HDevlop_Demo.gif alt></p><p><img src=HDevelop_Code.png alt></p><h1 id=c-demo>C# Demo</h1><p>對於寫相機SDK有經驗的朋友可能會說，相機SDK怎麼可以沒有<code>取像Callback</code>方法呢?<br>其實Halcon也有提供，但經過測試發現不是所有的實作都支援Callback方法，但如果只是要取像測試的話，這樣單張取像的方式應該也就夠用了。</p><p><img src=CSharp_Code.png alt>
+<img src=CSharp_Demo.gif alt></p><h2 id=halcon-frame-grabber-callback>Halcon Frame Grabber Callback</h2><p>測試過 GenICamTL 有支援</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cs data-lang=cs><span style=color:#66d9ef>var</span> grabber = <span style=color:#66d9ef>new</span> HFramegrabber(
+    <span style=color:#e6db74>&#34;GenICamTL&#34;</span>, <span style=color:#ae81ff>0</span>, <span style=color:#ae81ff>0</span>, <span style=color:#ae81ff>0</span>, <span style=color:#ae81ff>0</span>, <span style=color:#ae81ff>0</span>, <span style=color:#ae81ff>0</span>,
+    <span style=color:#e6db74>&#34;progressive&#34;</span>, -<span style=color:#ae81ff>1</span>, <span style=color:#e6db74>&#34;default&#34;</span>, -<span style=color:#ae81ff>1</span>, <span style=color:#e6db74>&#34;false&#34;</span>, <span style=color:#e6db74>&#34;default&#34;</span>,
+    _deviceName, <span style=color:#ae81ff>0</span>, -<span style=color:#ae81ff>1</span>);
+grabber.SetFramegrabberParam(<span style=color:#e6db74>&#34;TriggerMode&#34;</span>, <span style=color:#e6db74>&#34;Off&#34;</span>);
+
+<span style=color:#75715e>// 建立 相機 Callback
+</span><span style=color:#75715e></span><span style=color:#66d9ef>var</span> callback = Marshal.GetFunctionPointerForDelegate(
+    <span style=color:#66d9ef>new</span> HalconAPI.HFramegrabberCallback(HalconGrab_Callback));
+grabber.SetFramegrabberCallback(<span style=color:#e6db74>&#34;LineStatus&#34;</span>, callback, IntPtr.Zero);
+
+<span style=color:#66d9ef>private</span> <span style=color:#66d9ef>int</span> HalconGrab_Callback(IntPtr handle, IntPtr userContext, IntPtr context)
+{
+    <span style=color:#66d9ef>try</span>
+    {
+        <span style=color:#66d9ef>if</span> (ImageGrabbed == <span style=color:#66d9ef>null</span>) <span style=color:#66d9ef>return</span> <span style=color:#ae81ff>0</span>;
+
+        <span style=color:#75715e>// Get Frame Grabber Image
+</span><span style=color:#75715e></span>        <span style=color:#66d9ef>var</span> hImage = grabber.GrabImage();
+
+        <span style=color:#66d9ef>return</span> <span style=color:#ae81ff>0</span>;
+    }
+    <span style=color:#66d9ef>catch</span> (Exception ex)
+    {
+        <span style=color:#75715e>//  MessageBox.Show(ex.Message);//显示错误
+</span><span style=color:#75715e></span>        <span style=color:#66d9ef>return</span> -<span style=color:#ae81ff>1</span>;
+    }
+}
+</code></pre></div></div><div class=post-footer></div></article></main></body></html>

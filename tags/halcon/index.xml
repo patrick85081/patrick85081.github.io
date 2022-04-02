@@ -7,8 +7,10 @@ Halcon xyz Frame Grabber Interface
 Halcon做的一套中間取像的抽象層，也就是我們軟體界所說的 interface
 Frame Grabber Driver &amp;amp; SDK
 這裡是實作取像功能的實作，整合不同廠牌的相機驅動，為了方便我們可以使用
-使用方式 選擇實作介面 也可以使用自動偵測，判斷電腦本身可以使用哪些取像實作 連結相機 這裡展示就只使用File方式，指定資料夾內的影像，模擬相機取像的效果。 相機參數設定 這裡可以設定相機參數，例如使用GeniCam，這裡就會出現GeniCam參數 使用範本產生程式碼 HDevelop Demo C# Demo 對於寫相機SDK有經驗的朋友可能會說，相機SDK怎麼可以沒有取像Callback方法呢?
-其實Halcon也有提供，但經過測試發現不是所有的實作都支援Callback方法，但如果只是要取像測試的話，這樣單張取像的方式應該也就夠用了。</description></item><item><title>Halcon 常用的Function</title><link>https://patrick85081.github.io/posts/2020-11-18-halcon-note/halcon-note/</link><pubDate>Wed, 18 Nov 2020 22:18:52 +0800</pubDate><guid>https://patrick85081.github.io/posts/2020-11-18-halcon-note/halcon-note/</guid><description>影像分割 固定二值化 // P3, P4 =&amp;gt; 二值化閥值區間 threshold(GrayImage, DarkArea, 0, 128) 直方圖自動二值化 // P3 =&amp;gt; Sigma 高斯運算 平滑算子 auto_threshold(GrayImage, DarkArea, 8.0) P.S. 可用 gray_histo or gen_region_histo 查看直方圖
+使用方式 選擇實作介面 也可以使用自動偵測，判斷電腦本身可以使用哪些取像實作 連結相機 這裡展示就只使用File方式，指定資料夾內的影像，模擬相機取像的效果。 相機參數設定 這裡可以設定相機參數，例如使用GenICamTL，這裡就會出現GenICamTL參數 使用範本產生程式碼 HDevelop Demo C# Demo 對於寫相機SDK有經驗的朋友可能會說，相機SDK怎麼可以沒有取像Callback方法呢?
+其實Halcon也有提供，但經過測試發現不是所有的實作都支援Callback方法，但如果只是要取像測試的話，這樣單張取像的方式應該也就夠用了。
+Halcon Frame Grabber Callback 測試過 GenICamTL 有支援
+var grabber = new HFramegrabber( &amp;#34;GenICamTL&amp;#34;, 0, 0, 0, 0, 0, 0, &amp;#34;progressive&amp;#34;, -1, &amp;#34;default&amp;#34;, -1, &amp;#34;false&amp;#34;, &amp;#34;default&amp;#34;, _deviceName, 0, -1); grabber.</description></item><item><title>Halcon 常用的Function</title><link>https://patrick85081.github.io/posts/2020-11-18-halcon-note/halcon-note/</link><pubDate>Wed, 18 Nov 2020 22:18:52 +0800</pubDate><guid>https://patrick85081.github.io/posts/2020-11-18-halcon-note/halcon-note/</guid><description>影像分割 固定二值化 // P3, P4 =&amp;gt; 二值化閥值區間 threshold(GrayImage, DarkArea, 0, 128) 直方圖自動二值化 // P3 =&amp;gt; Sigma 高斯運算 平滑算子 auto_threshold(GrayImage, DarkArea, 8.0) P.S. 可用 gray_histo or gen_region_histo 查看直方圖
 自動全局二值化 利用直方圖像素分佈，例如最大類間方插法或平滑直方圖法
 // P3 =&amp;gt; 二值化的方法 // max_separability 直方圖中最大的可分性分割 // smooth_histo 平滑直方圖 // P4 =&amp;gt; 取 亮部 light 還是 暗部 dark // P5 =&amp;gt; 輸出 自動二值化使用的閥值 binary_threshold(GrayImage, DarkArea, &amp;#39;max_separability&amp;#39;, &amp;#39;dark&amp;#39;, UsedThreshold) 局部閥值分割法 適用於無法用單一灰階分割情況，如背景複雜，亮暗不均
 步驟
