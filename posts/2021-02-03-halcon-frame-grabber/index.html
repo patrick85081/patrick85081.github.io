@@ -18,6 +18,8 @@ grabber.SetFramegrabberParam(<span style=color:#e6db74>&#34;TriggerMode&#34;</sp
     <span style=color:#66d9ef>new</span> HalconAPI.HFramegrabberCallback(HalconGrab_Callback));
 grabber.SetFramegrabberCallback(<span style=color:#e6db74>&#34;LineStatus&#34;</span>, callback, IntPtr.Zero);
 
+grabber.GrabImageStart(-<span style=color:#ae81ff>1</span>);
+
 <span style=color:#66d9ef>private</span> <span style=color:#66d9ef>int</span> HalconGrab_Callback(IntPtr handle, IntPtr userContext, IntPtr context)
 {
     <span style=color:#66d9ef>try</span>
