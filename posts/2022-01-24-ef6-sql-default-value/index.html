@@ -1,0 +1,135 @@
+<!doctype html><html lang=zh-tw><head><title>EF6 資料庫欄位預設值 // 派翠克技術手札</title><link rel="shortcut icon" href=/favicon.ico><meta charset=utf-8><meta name=generator content="Hugo 0.81.0"><meta name=viewport content="width=device-width,initial-scale=1"><meta name=author content="Patrick"><meta name=description content="有接觸過SQL的朋友應該都知道資料庫欄位有個功能可以設定預設值，當新增資料時此欄位沒給資料時，資料庫會自動賦予預設值，這個需求再簡單不過了，但是在EF6上解法稍微複雜一些，而且還不能跨資料庫，因為它有部分是調用原始SQL方式，不過這裡先記錄一下方法。"><link rel=stylesheet href=https://patrick85081.github.io/css/main.min.88e7083eff65effb7485b6e6f38d10afbec25093a6fac42d734ce9024d3defbd.css><meta name=twitter:card content="summary"><meta name=twitter:title content="EF6 資料庫欄位預設值"><meta name=twitter:description content="有接觸過SQL的朋友應該都知道資料庫欄位有個功能可以設定預設值，當新增資料時此欄位沒給資料時，資料庫會自動賦予預設值，這個需求再簡單不過了，但是在EF6上解法稍微複雜一些，而且還不能跨資料庫，因為它有部分是調用原始SQL方式，不過這裡先記錄一下方法。"><meta property="og:title" content="EF6 資料庫欄位預設值"><meta property="og:description" content="有接觸過SQL的朋友應該都知道資料庫欄位有個功能可以設定預設值，當新增資料時此欄位沒給資料時，資料庫會自動賦予預設值，這個需求再簡單不過了，但是在EF6上解法稍微複雜一些，而且還不能跨資料庫，因為它有部分是調用原始SQL方式，不過這裡先記錄一下方法。"><meta property="og:type" content="article"><meta property="og:url" content="https://patrick85081.github.io/posts/2022-01-24-ef6-sql-default-value/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2022-01-24T22:19:36+08:00"><meta property="article:modified_time" content="2022-01-24T22:19:36+08:00"></head><body><header class=app-header><a href=https://patrick85081.github.io/><img class=app-header-avatar src=/avatar.png alt=Patrick></a><h1>派翠克技術手札</h1><nav class=app-header-menu><a class=app-header-menu-item href=/>首頁</a>
+-
+<a class=app-header-menu-item href=/tags/>標籤</a>
+-
+<a class=app-header-menu-item href=/search/>文章搜尋</a></nav><p>這裡是派翠克技術手札</p><div class=app-header-social><a href=https://github.com/patrick85081 target=_blank rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-github"><title>Github</title><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37.0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44.0 0020 4.77 5.07 5.07.0 0019.91 1S18.73.65 16 2.48a13.38 13.38.0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07.0 005 4.77 5.44 5.44.0 003.5 8.55c0 5.42 3.3 6.61 6.44 7A3.37 3.37.0 009 18.13V22"/></svg></a><a href=/index.xml target=_blank rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-rss"><title>Rss</title><path d="M4 11a9 9 0 019 9"/><path d="M4 4a16 16 0 0116 16"/><circle cx="5" cy="19" r="1"/></svg></a><a href=mailto:patrick85081@gmail.com target=_blank rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-mail"><title>聯絡我</title><path d="M4 4h16c1.1.0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1.0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></a></div></header><main class=app-container><article class=post><header class=post-header><h1 class=post-title>EF6 資料庫欄位預設值</h1><div class=post-meta><div><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar"><title>calendar</title><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>2022-01-24, Monday</div><div><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock"><title>clock</title><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>2 min read</div><div><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag"><title>tag</title><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83.0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg><a class=tag href=https://patrick85081.github.io/tags/entityframework/>EntityFramework</a></div></div></header><div class=post-content><p>有接觸過SQL的朋友應該都知道資料庫欄位有個功能可以設定預設值，當新增資料時此欄位沒給資料時，資料庫會自動賦予預設值，這個需求再簡單不過了，但是在EF6上解法稍微複雜一些，而且還不能跨資料庫，因為它有部分是調用原始SQL方式，不過這裡先記錄一下方法。</p><p>EntityFramework6是一個很不錯的ORM框架，但是它在某些資料庫較為細節的部分有些不夠完善，有些在EntityFrameworkCore都有簡單的解決方法，因為歷史包袱還是要繞些遠路。</p><h1 id=方法一-c-端解決方案>方法一 C# 端解決方案</h1><p>這種方式在SQL端還是沒有預設值，但是使用C#物件屬性預設值的方式，如果以完美主義的角度來說還是不夠。</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cs data-lang=cs><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>MyEntity</span>
+{
+    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>string</span> Json { <span style=color:#66d9ef>get</span>; <span style=color:#66d9ef>set</span>; } = <span style=color:#e6db74>&#34;{}&#34;</span>;
+}
+</code></pre></div><h1 id=方法二-entity-framework-6-default-value-for-sql>方法二 Entity Framework 6 Default Value For Sql</h1><p>.Net 已經內建 <code>DefaultValueAttribute</code> ，所以我們就不另外建立。</p><ul><li><code>DbContext</code> 增加 <code>Conventions</code>，將<code>DefaultValueAttribute</code> 對應到字串資料上</li></ul><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cs data-lang=cs><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>DataContext</span> : DbContext
+{
+    <span style=color:#66d9ef>protected</span> <span style=color:#66d9ef>override</span> <span style=color:#66d9ef>void</span> OnModelCreating(DbModelBuilder modelBuilder)
+    {
+        modelBuilder.Conventions.Add(<span style=color:#66d9ef>new</span> AttributeToColumnAnnotationConvention&lt;DefaultValueAttribute, <span style=color:#66d9ef>string</span>&gt;(
+            <span style=color:#e6db74>&#34;SqlDefaultValue&#34;</span>,
+            (p, attribute) =&gt; 
+                attribute.SingleOrDefault().Value.ToString()));
+    }
+}
+</code></pre></div><ul><li><code>Entity</code> 中增加 <code>DefaultValue</code>，裡面可以增加預設值，除了填寫常數以外，也可以填寫<code>gettime()</code>之類的SQL方法，功能也就更多元。</li></ul><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cs data-lang=cs><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>MyEntity</span>
+{
+<span style=color:#a6e22e>    [DefaultValue(&#34;&#39;{}&#39;&#34;)]</span>
+    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>string</span> Json { <span style=color:#66d9ef>get</span>; <span style=color:#66d9ef>set</span>; } = <span style=color:#e6db74>&#34;{}&#34;</span>;
+}
+</code></pre></div><ul><li>增加 <code>MigrationSqlGenerator</code>，在新增資料表、修改資料表、新增欄位、修改欄位時去修改預設值，但是移除預設值時會去執行指定的SQL語法。</li></ul><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cs data-lang=cs><span style=color:#66d9ef>internal</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>DefaultValueSqlServerMigrationSqlGenerator</span> : SqlServerMigrationSqlGenerator
+{
+    <span style=color:#66d9ef>private</span> <span style=color:#66d9ef>int</span> dropConstraintCount;
+
+    <span style=color:#66d9ef>protected</span> <span style=color:#66d9ef>override</span> <span style=color:#66d9ef>void</span> Generate(AddColumnOperation addColumnOperation)
+    {
+        SetAnnotatedColumn(addColumnOperation.Column, addColumnOperation.Table);
+        <span style=color:#66d9ef>base</span>.Generate(addColumnOperation);
+    }
+
+    <span style=color:#66d9ef>protected</span> <span style=color:#66d9ef>override</span> <span style=color:#66d9ef>void</span> Generate(AlterColumnOperation alterColumnOperation)
+    {
+        SetAnnotatedColumn(alterColumnOperation.Column, alterColumnOperation.Table);
+        <span style=color:#66d9ef>base</span>.Generate(alterColumnOperation);
+    }
+
+    <span style=color:#66d9ef>protected</span> <span style=color:#66d9ef>override</span> <span style=color:#66d9ef>void</span> Generate(CreateTableOperation createTableOperation)
+    {
+        SetAnnotatedColumns(createTableOperation.Columns, createTableOperation.Name);
+        <span style=color:#66d9ef>base</span>.Generate(createTableOperation);
+    }
+
+    <span style=color:#66d9ef>protected</span> <span style=color:#66d9ef>override</span> <span style=color:#66d9ef>void</span> Generate(AlterTableOperation alterTableOperation)
+    {
+        SetAnnotatedColumns(alterTableOperation.Columns, alterTableOperation.Name);
+        <span style=color:#66d9ef>base</span>.Generate(alterTableOperation);
+    }
+
+    <span style=color:#66d9ef>private</span> <span style=color:#66d9ef>void</span> SetAnnotatedColumn(ColumnModel column, <span style=color:#66d9ef>string</span> tableName)
+    {
+        <span style=color:#66d9ef>if</span> (column.Annotations.TryGetValue(<span style=color:#e6db74>&#34;SqlDefaultValue&#34;</span>, <span style=color:#66d9ef>out</span> <span style=color:#66d9ef>var</span> values))
+        {
+            <span style=color:#66d9ef>if</span> (values.NewValue == <span style=color:#66d9ef>null</span>)
+            {
+                column.DefaultValueSql = <span style=color:#66d9ef>null</span>;
+                <span style=color:#66d9ef>using</span> var writer = Writer();
+
+                <span style=color:#75715e>// Drop Constraint
+</span><span style=color:#75715e></span>                writer.WriteLine(GetSqlDropConstraintQuery(tableName, column.Name));
+                Statement(writer);
+            }
+            <span style=color:#66d9ef>else</span>
+            {
+                column.DefaultValueSql = (<span style=color:#66d9ef>string</span>)values.NewValue;
+            }
+        }
+    }
+
+    <span style=color:#66d9ef>private</span> <span style=color:#66d9ef>void</span> SetAnnotatedColumns(IEnumerable&lt;ColumnModel&gt; columns, <span style=color:#66d9ef>string</span> tableName)
+    {
+        <span style=color:#66d9ef>foreach</span> (<span style=color:#66d9ef>var</span> column <span style=color:#66d9ef>in</span> columns)
+        {
+            SetAnnotatedColumn(column, tableName);
+        }
+    }
+
+    <span style=color:#66d9ef>private</span> <span style=color:#66d9ef>string</span> GetSqlDropConstraintQuery(<span style=color:#66d9ef>string</span> tableName, <span style=color:#66d9ef>string</span> columnName)
+    {
+        <span style=color:#66d9ef>var</span> tableNameSplitByDot = tableName.Split(<span style=color:#e6db74>&#39;.&#39;</span>);
+        <span style=color:#66d9ef>var</span> tableSchema = tableNameSplitByDot[<span style=color:#ae81ff>0</span>];
+        <span style=color:#66d9ef>var</span> tablePureName = tableNameSplitByDot[<span style=color:#ae81ff>1</span>];
+
+        <span style=color:#66d9ef>var</span> str = <span style=color:#e6db74>$@&#34;DECLARE @var{dropConstraintCount} nvarchar(128)
+</span><span style=color:#e6db74>SELECT @var{dropConstraintCount} = name
+</span><span style=color:#e6db74>FROM sys.default_constraints
+</span><span style=color:#e6db74>WHERE parent_object_id = object_id(N&#39;{tableSchema}.[{tablePureName}]&#39;)
+</span><span style=color:#e6db74>AND col_name(parent_object_id, parent_column_id) = &#39;{columnName}&#39;;
+</span><span style=color:#e6db74>IF @var{dropConstraintCount} IS NOT NULL
+</span><span style=color:#e6db74>EXECUTE(&#39;ALTER TABLE {tableSchema}.[{tablePureName}] DROP CONSTRAINT [&#39; + @var{dropConstraintCount} + &#39;]&#39;)&#34;</span>;
+
+        dropConstraintCount++;
+        <span style=color:#66d9ef>return</span> str;
+    }
+}
+</code></pre></div><h2 id=結果>結果</h2><p>之後如果有Migration時候會發現，<code>DbMigration</code>中出現 增加移除 <code>Annotations</code>的程式碼了。</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cs data-lang=cs><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>partial</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Add_MyEntity_Table</span> : DbMigration
+{
+    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>override</span> <span style=color:#66d9ef>void</span> Up()
+    {
+        CreateTable(
+            <span style=color:#e6db74>&#34;dbo.MyEntity&#34;</span>,
+            c =&gt; <span style=color:#66d9ef>new</span>
+                {
+                    Id = c.Long(nullable: <span style=color:#66d9ef>false</span>, identity: <span style=color:#66d9ef>true</span>),
+                    Type = c.Int(nullable: <span style=color:#66d9ef>false</span>),
+                    Json = c.String(nullable: <span style=color:#66d9ef>false</span>,
+                        annotations: <span style=color:#66d9ef>new</span> Dictionary&lt;<span style=color:#66d9ef>string</span>, AnnotationValues&gt;
+                        {
+                            { 
+                                <span style=color:#e6db74>&#34;SqlDefaultValue&#34;</span>,
+                                <span style=color:#66d9ef>new</span> AnnotationValues(oldValue: <span style=color:#66d9ef>null</span>, newValue: <span style=color:#e6db74>&#34;&#39;{}&#39;&#34;</span>)
+                            },
+                        }),
+                })
+            .PrimaryKey(t =&gt; t.Id);
+    }
+    
+    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>override</span> <span style=color:#66d9ef>void</span> Down()
+    {
+        DropTable(<span style=color:#e6db74>&#34;dbo.MyEntity&#34;</span>,
+            removedColumnAnnotations: <span style=color:#66d9ef>new</span> Dictionary&lt;<span style=color:#66d9ef>string</span>, IDictionary&lt;<span style=color:#66d9ef>string</span>, <span style=color:#66d9ef>object</span>&gt;&gt;
+            {
+                {
+                    <span style=color:#e6db74>&#34;Json&#34;</span>,
+                    <span style=color:#66d9ef>new</span> Dictionary&lt;<span style=color:#66d9ef>string</span>, <span style=color:#66d9ef>object</span>&gt;
+                    {
+                        { <span style=color:#e6db74>&#34;SqlDefaultValue&#34;</span>, <span style=color:#e6db74>&#34;&#39;{}&#39;&#34;</span> },
+                    }
+                },
+            });
+    }
+}
+</code></pre></div><h1 id=參考資料>參考資料</h1><p><a href=https://stackoverflow.com/questions/19554050/entity-framework-6-code-first-default-value>Entity Framework 6 Code first Default value</a></p></div><div class=post-footer></div></article></main></body></html>
