@@ -4,4 +4,6 @@ mmc 產生憑證 SQL Server 使用SSL憑證 開啟 SQL Server 組態管理員
 Client 連線 Encrypt connection 使用加密連線 (對應連線字串 Encrypt=True)
 Trust server certificate 信任憑證 (對應連線字串 TrustServerCertificate=True)
 驗證是否加密 使用Wireshark 使用 TDS 過濾 看不到 SQL Batch 就代表加密成功
-參考資料 啟用 SQL Server SSL 連線加密</description></item></channel></rss>
+參考資料 啟用 SQL Server SSL 連線加密</description></item><item><title>IIS 使用 LocalDB 問題</title><link>https://patrick85081.github.io/posts/2021-05-07-iis-localdb/</link><pubDate>Fri, 07 May 2021 23:28:13 +0800</pubDate><guid>https://patrick85081.github.io/posts/2021-05-07-iis-localdb/</guid><description>開發時候使用LocalDB使用得很順手，因此將網站放到本機的IIS時，也會想要沿用開發時候使用的LocalDb，原本以為是很單純的一件事，沒想到後面有這麼多的問題。
+當IIS下 直接使用 LocalDB，出現 Local DB Runtime Error 出現以下錯誤
+A network-related or instance-specific error occurred while establishing a connection to SQL Server. The server was not found or was not accessible. Verify that the instance name is correct and that SQL Server is configured to allow remote connections. (provider: SQL Network Interfaces, error: 50 - Local Database Runtime error occurred. Cannot create an automatic instance. See the Windows Application event log for error details.</description></item></channel></rss>
