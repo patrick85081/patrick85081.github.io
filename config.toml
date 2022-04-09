@@ -5,7 +5,7 @@ theme = 'm10c'
 
 [params]
   author = "Patrick"
-  description = "這裡是派翠克技術手札"
+  description = "這裡是一位接觸過AOI、電控軟體、安卓移動端、WPF、Asp.Net的派翠克，熱愛C#語言帶來的方便與美好，雖不喜歡JavaScript但也不排斥，從Jave和Kotlin身上啟蒙設計模式的真諦，將日常所見所聞記錄下來的技術手札。"
   avatar = 'avatar.png'
 
 [menu]
