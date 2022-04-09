@@ -30,6 +30,14 @@ theme = 'm10c'
   icon = "github"
   name = "Github"
   url = "https://github.com/patrick85081"
+[[params.social]]
+  icon = "rss"
+  name = "Rss"
+  url = "/index.xml"
+[[params.social]]
+  icon = "mail"
+  name = "聯絡我"
+  url = "mailto:patrick85081@gmail.com"
 
 
 [outputs]
