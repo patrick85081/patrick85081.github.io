@@ -158,13 +158,13 @@ private static extern int ****_12GPIO_SetValue(IntPtr hdrv, int GPIO_Num, bool v
 class Calculate
 {
 public:
-	Calculate();
+    Calculate();
 
-	int Addition(int a, int b);//¥[ªk
+    int Addition(int a, int b);//加法
 
-	int Subtraction(int a, int b);//´îªk
+    int Subtraction(int a, int b);//剪髮
 
-	void RegisterCallback(void(*callback)(int, int, int, int));
+    void RegisterCallback(void(*callback)(int, int, int, int));// 註冊函式指標，作為Callback Function
 };
 ```
 
@@ -179,17 +179,18 @@ Calculate::Calculate()
 
 int Calculate::Addition(int a, int b)
 {
-	return a + b;
+    return a + b;
 }
 
 int Calculate::Subtraction(int a, int b)
 {
-	return a - b;
+    return a - b;
 }
 
 void Calculate::RegisterCallback(void(*callback)(int, int, int, int))
 {
-	callback(1, 2, 3, 4);
+    // 呼叫 callback 方法
+    callback(1, 2, 3, 4);
 }
 ```
 
@@ -207,33 +208,31 @@ void Calculate::RegisterCallback(void(*callback)(int, int, int, int))
 
 extern "C" TestDll_API Calculate* CreateInstance()
 {
-	return new Calculate();
+    return new Calculate();
 }
 
 extern "C" TestDll_API void DisposeInstance(Calculate* instance)
 {
-	if (instance != nullptr)
-	{
-		delete instance;
-		instance = nullptr;
-	}
+    if (instance != nullptr)
+    {
+        delete instance;
+        instance = nullptr;
+    }
 }
 
 extern "C" TestDll_API int Add(Calculate* instance, int a, int b)
-{	
-	//宣告在function內，只有該function能使用
-	return instance->Addition(a, b);
+{    
+    return instance->Addition(a, b);
 }
 
 extern "C" TestDll_API int Sub(Calculate* instance, int a, int b)
 {
-	//宣告在function內，只有該function能使用
-	return instance->Subtraction(a, b);
+    return instance->Subtraction(a, b);
 }
 
 extern "C" TestDll_API void RegisterCallback(Calculate* instance, void(*callback)(int, int, int, int))
 {
-	return instance->RegisterCallback(callback);
+    return instance->RegisterCallback(callback);
 }
 ```
 * 最後做完的專案結構會類似這樣  
@@ -247,23 +246,21 @@ public class Calculate : IDisposable
 {
     //傳入和傳出的型態格式必須同ForExternCall.cpp內的設置！！
 
-    [DllImport("TestDll", EntryPoint = "CreateInstance")]
+    //也可以不設置進入點，但函數名稱必須相同
+    [DllImport("TestDll.dll", EntryPoint = "CreateInstance")]
     private static extern IntPtr CreateInstance();
 
-    [DllImport("TestDll", EntryPoint = "DisposeInstance")]
+    [DllImport("TestDll.dll", EntryPoint = "DisposeInstance")]
     private static extern void DisposeInstance(IntPtr instance);
 
-    //我將dll檔放到D:，然後設置進入點
     [DllImport("TestDll.dll", EntryPoint = "Add")]
     private static extern int Add(IntPtr instance, int a, int b);
 
-    //也可以不設置進入點，但函數名稱必須相同
     [DllImport("TestDll.dll", EntryPoint ="Sub")]
     private static extern int Sub(IntPtr instance, int a, int b);
 
-    [DllImport("TestDll", EntryPoint = "RegisterCallback")]
+    [DllImport("TestDll.dll", EntryPoint = "RegisterCallback")]
     private static extern void RegisterCallback(IntPtr instance, Callback callback);
-
 
     public delegate void Callback(int a, int b, int c, int d);
 

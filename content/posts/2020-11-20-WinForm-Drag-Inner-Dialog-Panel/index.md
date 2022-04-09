@@ -4,7 +4,7 @@ date: 2020-11-20T20:12:59+08:00
 draft: false
 tags: 
   - WinForm
-  - WinAPI
+  - WindowsAPI
 description: "開發 WinForm 時，要做到WinForm內部對話框，而且又可以按住標題拖曳的效果，可以透過Panel手刻出對話框，透過WinAPI做到拖曳效果。"
 ---
 開發 WinForm 時，要做到WinForm內部對話框，而且又可以按住標題拖曳的效果，可以透過`Panel`手刻出對話框，透過WinAPI做到拖曳效果。

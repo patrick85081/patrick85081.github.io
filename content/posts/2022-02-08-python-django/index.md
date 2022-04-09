@@ -3,8 +3,8 @@ title: "Python Django 基本指令"
 date: 2022-02-08T15:17:30+08:00
 draft: false
 tags: 
-  - python
-  - django
+  - Python
+  - Django
 description: "這裡來介紹一下python & Django幾本的指令操作。"
 ---
 

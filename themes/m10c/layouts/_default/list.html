@@ -11,7 +11,7 @@
           <span class="posts-list-item-description">
             {{ partial "icon.html" (dict "ctx" $ "name" "calendar") }}
             <!--{{ .PublishDate.Format "Jan 2, 2006" }}-->
-            {{ .PublishDate.Format "2006-01-02" }}
+            {{ .PublishDate.Format "2006-01-02, Monday" }}
             -
             {{ partial "icon.html" (dict "ctx" $ "name" "clock") }}
             {{ .ReadingTime }} min read
