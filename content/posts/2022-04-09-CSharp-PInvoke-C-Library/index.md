@@ -5,10 +5,10 @@ draft: false
 tags: 
   - PInvoke
   - WindowsAPI
-description: "這些年累積下來的經驗，很多場景都需要與C/C++ Library溝通，當 C# 需要呼叫 C/C++ 程式庫時，需要使用PInvoke(Platform Invocation Services)，來呼叫裡面的function，常用到的場景是呼叫Windows原生地Win32API，或是使用硬體SDK時只提供C 函式庫，這裡也有好幾種狀況與方式，紀錄一下方便可以快速了解。"
+description: "很多場景都需要與C/C++ Library溝通做朋友，當 C# 需要呼叫 C/C++ 程式庫時，需要使用PInvoke(Platform Invocation Services)，來呼叫裡面的function，常用到的場景是呼叫Windows原生地Win32API，或是使用硬體SDK時只提供C 函式庫，這裡也有好幾種狀況與方式，紀錄一下方便可以快速了解。"
 ---
 
-這些年累積下來的經驗，很多場景都需要與`C/C++ Library`溝通，當 C# 需要呼叫 C/C++ 程式庫時，需要使用`PInvoke`(Platform Invocation Services)，來呼叫裡面的function，常用到的場景是呼叫Windows原生地`Win32API`，或是使用硬體SDK時只提供C 函式庫，這裡也有好幾種狀況與方式，紀錄一下方便可以快速了解。
+很多場景都需要與`C/C++ Library`溝通做朋友，當 C# 需要呼叫 C/C++ 程式庫時，需要使用`PInvoke`(Platform Invocation Services)，來呼叫裡面的function，常用到的場景是呼叫Windows原生地`Win32API`，或是使用硬體SDK時只提供C 函式庫，這裡也有好幾種狀況與方式，紀錄一下方便可以快速了解。
 
 # 靜態呼叫
 使用C#的`DllImport`去匯入C語言function，例如在`user32.dll`中的`MessageBox`，這時候要先了解裡面的資料型態該如何去對應C#資料型態。
