@@ -1,0 +1,51 @@
+<!doctype html><html lang=zh-tw><head><title>Windows Port Forwarding // 派翠克技術手札</title><link rel="shortcut icon" href=/favicon.ico><meta charset=utf-8><meta name=generator content="Hugo 0.81.0"><meta name=viewport content="width=device-width,initial-scale=1"><meta name=author content="Patrick"><meta name=description content="今天來研究Windows平台如何做到 Port Forwarding的功能，將所有的封包進行轉發作業。"><link rel=stylesheet href=https://patrick85081.github.io/css/main.min.88e7083eff65effb7485b6e6f38d10afbec25093a6fac42d734ce9024d3defbd.css><meta name=twitter:card content="summary"><meta name=twitter:title content="Windows Port Forwarding"><meta name=twitter:description content="今天來研究Windows平台如何做到 Port Forwarding的功能，將所有的封包進行轉發作業。"><meta property="og:title" content="Windows Port Forwarding"><meta property="og:description" content="今天來研究Windows平台如何做到 Port Forwarding的功能，將所有的封包進行轉發作業。"><meta property="og:type" content="article"><meta property="og:url" content="https://patrick85081.github.io/posts/2022-04-18-windows-udp-port-forwarding/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2022-04-18T13:47:43+08:00"><meta property="article:modified_time" content="2022-04-18T13:47:43+08:00"></head><body><header class=app-header><a href=https://patrick85081.github.io/><img class=app-header-avatar src=/avatar.png alt=Patrick></a><h1>派翠克技術手札</h1><nav class=app-header-menu><a class=app-header-menu-item href=/>首頁</a>
+-
+<a class=app-header-menu-item href=/tags/>標籤</a>
+-
+<a class=app-header-menu-item href=/search/>文章搜尋</a></nav><p>這裡是一位接觸過AOI、電控軟體、安卓移動端、WPF、Asp.Net什麼都學的派翠克，熱愛C#語言帶來的方便與美好，雖不喜歡JavaScript但也不排斥，從Jave和Kotlin身上啟蒙設計模式的真諦，將日常所見所聞記錄下來的技術手札。</p><div class=app-header-social><a href=https://github.com/patrick85081 target=_blank rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-github"><title>Github</title><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37.0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44.0 0020 4.77 5.07 5.07.0 0019.91 1S18.73.65 16 2.48a13.38 13.38.0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07.0 005 4.77 5.44 5.44.0 003.5 8.55c0 5.42 3.3 6.61 6.44 7A3.37 3.37.0 009 18.13V22"/></svg></a><a href=/index.xml target=_blank rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-rss"><title>Rss</title><path d="M4 11a9 9 0 019 9"/><path d="M4 4a16 16 0 0116 16"/><circle cx="5" cy="19" r="1"/></svg></a><a href=mailto:patrick85081@gmail.com target=_blank rel="noreferrer noopener"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-mail"><title>聯絡我</title><path d="M4 4h16c1.1.0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1.0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></a></div></header><main class=app-container><article class=post><header class=post-header><h1 class=post-title>Windows Port Forwarding</h1><div class=post-meta><div><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar"><title>calendar</title><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>2022-04-18, Monday</div><div><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock"><title>clock</title><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>2 min read</div><div><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag"><title>tag</title><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83.0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg><a class=tag href=https://patrick85081.github.io/tags/network/>Network</a>
+<a class=tag href=https://patrick85081.github.io/tags/routing/>Routing</a></div></div></header><div class=post-content><p>今天來研究Windows平台如何做到 Port Forwarding的功能，將所有的封包進行轉發作業。</p><h1 id=使用-windows-內建的-port-proxy-功能>使用 Windows 內建的 Port Proxy 功能</h1><p>只支援TCP協定<br><img src=Port_Forwarding_1.png alt></p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cmd data-lang=cmd>// 增加 Port Forwarding
+netsh interface portproxy add v4tov4 listenport=4001 listenaddress=192.168.36.100 connectport=4001 connectaddress=192.168.36.75
+
+// 刪除 Port Forwarding
+netsh interface portproxy delete v4tov4 listenport=4001 listenaddress=192.168.36.100
+
+// 清除所有的 Port Forwarding
+netsh interface portproxy reset
+
+// 顯示目前的 Forwarding 設定
+netsh interface portproxy show v4tov4
+
+Listen on ipv4:             Connect to ipv4:
+Address         Port        Address         Port
+--------------- ----------  --------------- ----------
+192.168.36.100  4001        192.168.36.90   4001
+</code></pre></div><hr><h1 id=使用-windows-server-nat-server-的-port-mapping>使用 Windows Server NAT Server 的 Port Mapping</h1><p>首先先開啟 NAT 伺服器，使用 TCP/UDP Port對應，讓外部使用者可以存取內部伺服器。</p><h1 id=安裝-nat-伺服器>安裝 NAT 伺服器</h1><h2 id=伺服器腳色安裝>伺服器腳色安裝</h2><p>伺服器 》 管理 》 新增角色及功能</p><p><img src=Windows_Server_Enable_Nat_01.jpg alt></p><p>選擇 <strong>遠端存取</strong><br><img src=Windows_Server_Enable_Nat_02.jpg alt></p><p>選擇 <strong>RAS連線管理員系統管理組建(CMAK)</strong><br><img src=Windows_Server_Enable_Nat_03.jpg alt></p><p><img src=Windows_Server_Enable_Nat_04.jpg alt></p><p>選擇 <strong>路由</strong><br><img src=Windows_Server_Enable_Nat_05.jpg alt></p><h2 id=路由及遠端存取-設定>路由及遠端存取 設定</h2><p><img src=Windows_Server_Enable_Nat_06.jpg alt></p><p>伺服器管理員 > 工具 > 點選 路由及遠端存取<br><img src=Windows_Server_Enable_Nat_07.jpg alt></p><p>選 <strong>網路位址轉譯 (NAT)</strong><br><img src=Windows_Server_Enable_Nat_10.jpg alt></p><p>選擇 網路卡<br><img src=Windows_Server_Enable_Nat_11.jpg alt></p><p><img src=Windows_Server_Enable_Nat_12.jpg alt></p><h2 id=配置-nat-設定>配置 NAT 設定</h2><p><img src=Windows_Server_Enable_Nat_13.jpg alt></p><p><img src=Windows_Server_Enable_Nat_14.jpg alt></p><p><img src=Windows_Server_Enable_Nat_15.jpg alt></p><h1 id=routing-nat-port-mapping>Routing Nat Port Mapping</h1><h2 id=使用-command-line-設定>使用 Command Line 設定</h2><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-cmd data-lang=cmd>// 增加 Routing Nat Port Mapping
+netsh routing ip nat add portmapping Ethernet0 udp 0.0.0.0 4000 192.168.36.75 4000
+// 刪除 Routing Nat Port Mapping
+netsh routing ip nat delete portmapping Ethernet0 udp 0.0.0.0 4000
+
+// 顯示目前 Routing Nat Port Mapping
+netsh routing ip nat show interface Ethernet0
+
+
+NAT  Ethernet0 設定
+---------------------------
+模式              : 位址和連接埠轉譯
+
+
+NAT 靜態連接埠對應設定
+-------------------------------------
+通訊協定          : UDP
+公用位址          : 0.0.0.0
+公用連接埠        : 4000
+私人位址          : 192.168.36.90
+私人連接埠        : 4000
+</code></pre></div><h2 id=使用-ui-設定>使用 UI 設定</h2><p><img src=UI_Port_Mapping_01.png alt></p><p>新增 Port Mapping<br><img src=UI_Port_Mapping_02.png alt></p><p>設定相關對應資料<br><img src=UI_Port_Mapping_03.png alt></p><h1 id=實際測試結果>實際測試結果</h1><h2 id=同網段-的情況下>同網段 的情況下</h2><p>測試環境</p><ul><li><p>發送端
+192.168.36.88<br>向 192.168.36.100 發送 UDP封包</p></li><li><p>轉拋端
+192.168.36.100<br>使用 NAT 轉發 UDP 4000 給 192.168.36.90</p></li><li><p>被轉拋端
+192.168.36.90<br>接收 UDP 封包</p></li></ul><h3 id=步驟如下>步驟如下：</h3><ol><li>192.168.36.88 打給 192.168.36.100</li><li>192.168.36.100 轉發給 192.168.36.90 （使用 192.168.36.88 的名義）</li><li>192.168.36.90 成功收到</li><li>從 192.168.36.90 打回去 ，因打回給 192.168.36.88是同網段，所以不會透過 192.168.36.100發送而是直接打給192.168.36.88，雖然 192.168.36.88有收到資料，但不是192.168.36.100打的資料所以被拒收。</li></ol><p><img src=./Routing_Nat_Problem.png alt></p><h2 id=問題思考>問題思考</h2><p>為什麼在相同網段情況下會有問題呢？因為通訊埠轉發使用場景是，外網設備需要訪問內網設備時，路由器只單獨開放單一埠進行通訊訪問，如果以路由器的角度來思考，就能理解這次遇到的問題以及要如何解決。</p><p>此方法必須滿足以下兩個條件，才能正常工作：</p><ol><li><strong>發送端</strong> 與 <strong>被轉拋端</strong> 必須為不同網段。</li><li><strong>轉拋端</strong> 通往預設閘道的路上必須經過 <strong>被轉拋端</strong>，最簡單的方式預設閘道設成 <strong>被轉拋端</strong>。</li></ol><p>這樣有個問題，<strong>被轉拋端</strong> 的預設閘道設定成 <strong>轉拋端</strong>，那這樣會不會影響<strong>被轉拋端</strong>的上網能力？
+答案是不會，<strong>轉拋端</strong> 會協助 <strong>被轉拋端</strong> 進行封包的傳遞，並不會影響對外聯網能力，而只是在原本的通往Gateway中間在增加一個路由器而已。</p><hr><h2 id=不同網段-的情況下>不同網段 的情況下</h2><ul><li><p>發送端
+192.168.36.88<br>向 192.168.36.100 發送 UDP封包</p></li><li><p>轉拋端
+192.168.36.100 && 192.168.28.100<br>使用 NAT 轉發 UDP 4000 給 192.168.36.70</p></li><li><p>被轉拋端
+IP:192.168.28.70<br>GW:192.168.28.100
+接收 UDP 封包</p></li></ul><h3 id=步驟如下-1>步驟如下：</h3><ol><li>192.168.36.88 打給 192.168.36.100</li><li>192.168.36.100 轉發給 192.168.28.90 （使用 192.168.36.88 的名義）</li><li>192.168.28.70 成功收到</li><li>從 192.168.28.70 打回去 ，因打回給IP 192.168.36.88為不同網段，所以會轉去 Gateway 192.168.28.100，192.168.28.100就會成功將封包轉回給192.168.36.88。</li></ol><p><img src=./Routing_Nat_OK.png alt></p><hr><h1 id=參考資料>參考資料</h1><ul><li><p>通訊埠轉發</p><ul><li><a href=http://woshub.com/port-forwarding-in-windows/>在 Windows 上配置埠轉發</a></li><li><a href=https://cxywk.com/q/Cd3KMBps>Windows 上 UDP 流的简单端口转发</a></li></ul></li><li><p>NAT 伺服器</p><ul><li><a href="https://blog.pmail.idv.tw/?p=5165">Windows Server 2012筆記(六) NAT伺服器設定</a></li></ul></li></ul></div><div class=post-footer></div></article></main></body></html>
